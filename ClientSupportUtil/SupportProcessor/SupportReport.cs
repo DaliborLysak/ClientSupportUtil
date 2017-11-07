@@ -74,23 +74,8 @@ namespace ClientSupport
                 var reportLine = supportPersonReport.Get();
                 reportList.Add(reportLine);
             }
-            //reportList = EyeCandyReportLines(reportList);
             reportList.ForEach(i => report += i);
             return report;
-        }
-
-        private List<string> EyeCandyReportLines(List<string> reportList)
-        {
-            var maxLength = reportList.Select(i => i.Substring(0, i.LastIndexOf(NumberDataSplitter)).Length).Max();
-            var newReportLines = new List<string>();
-            foreach(var line in reportList)
-            {
-                var length = line.Substring(0, line.LastIndexOf(NumberDataSplitter)).Length;
-                var spaceCorrection = new string(' ', maxLength - length);
-                newReportLines.Add(line.Replace(NumberDataSplitter, $"{spaceCorrection}{NumberDataSplitter}"));
-            }
-
-            return newReportLines;
         }
 
         public override bool IsOldWeekendDefinition()
