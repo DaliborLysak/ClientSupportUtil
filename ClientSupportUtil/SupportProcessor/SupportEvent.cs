@@ -1,7 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using ICSWrapper;
+﻿using ICSWrapper;
+using System;
 
 namespace ClientSupport
 {
@@ -11,11 +9,23 @@ namespace ClientSupport
         {
             Date = icsEvent.StartDate;
             SupportType =
-                (icsEvent.StartDate.DayOfWeek == DayOfWeek.Friday) && (icsEvent.EndDate.DayOfWeek == DayOfWeek.Monday)
-                ? SupportDayType.Weekend
-                : holiday ? SupportDayType.Holiday : SupportDayType.WorkDay;
+                IsWeekend(icsEvent.StartDate, icsEvent.EndDate) ? SupportDayType.Weekend : holiday ? SupportDayType.Holiday : SupportDayType.WorkDay;
             Person = icsEvent.Summary.Split('(')[0].Trim();
         }
+
+        private bool IsWeekend(DateTime startDate, DateTime endDate)
+        {
+            bool isWeekend = false;
+            if (((startDate.DayOfWeek == DayOfWeek.Saturday) || (startDate.DayOfWeek == DayOfWeek.Friday)) && (endDate.DayOfWeek == DayOfWeek.Monday))
+            {
+                OldWeekendDefinition = startDate.DayOfWeek == DayOfWeek.Friday;
+                isWeekend = true;
+            }
+
+            return isWeekend;
+        }
+
+        public bool OldWeekendDefinition { get; private set; } = false;
 
         public DateTime Date { get; private set; }
 

@@ -9,7 +9,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ICSWrapper", "..\..\ICSWrap
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ClientSupport", "SupportProcessor\ClientSupport.csproj", "{3763CE3C-D9B3-490F-83CC-AFDA130A92C1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClientSupportClient", "WindowsFormsApp1\ClientSupportClient.csproj", "{25DFF008-B297-40DF-822A-6B9068A5A896}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClientSupportClient", "ClientSupportClient\ClientSupportClient.csproj", "{25DFF008-B297-40DF-822A-6B9068A5A896}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

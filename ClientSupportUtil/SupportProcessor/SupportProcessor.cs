@@ -23,14 +23,15 @@ namespace ClientSupport
             return Calendar.Keys.ToList();
         }
 
-        public string GetMonthReport(string month)
+        public string GetMonthReport(string month, string correctionNamesPath)
         {
-            return Report.Get(Calendar[month], ReportMonths[month]);
+            return new SupportReport(correctionNamesPath).Get(Calendar[month], ReportMonths[month]);
         }
 
         public void Parse(ICSCalendar calendar)
         {
             Calendar.Clear();
+            //2017.09.01 je prvni den pocitani supportu
             var validCalendar = calendar.Events.Where(e => e.StartDate > new DateTime(2017, 8, 31)).OrderBy(e => e.StartDate.Month);
             var reportMonth = 2; // predtim se pocitaly jinak reporty
             foreach (ICSEvent icsEvent in validCalendar)
@@ -48,7 +49,5 @@ namespace ClientSupport
         }
 
         private Holidays Holidays = new Holidays();
-
-        private SupportReport Report = new SupportReport();
     }
 }

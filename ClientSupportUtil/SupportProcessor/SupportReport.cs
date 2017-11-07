@@ -3,34 +3,24 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 
+
 namespace ClientSupport
 {
-    public class SupportReport
+    public class SupportReport : SupportReportObject
     {
-        private Dictionary<string, List<SupportEvent>> DaysByPerson = new Dictionary<string, List<SupportEvent>>();
-        private Dictionary<SupportEvent.SupportDayType, Dictionary<string, int>> DaysBySupportDayType;
-        private int WorkdaySummary = 0;
-        private int WeekendSummary = 0;
-        private int HolidaySummary = 0;
+        private List<SupportPersonReport> SupportPersonReports = new List<SupportPersonReport>();
+        private SupportHelper SupportHelper;
 
-        public SupportReport()
+        public SupportReport(string correctionNamesPath)
         {
-
+            SupportHelper = new SupportHelper(correctionNamesPath);
         }
 
-        private void Init()
+        protected override void Init()
         {
-            DaysByPerson.Clear();
-            DaysBySupportDayType = new Dictionary<ClientSupport.SupportEvent.SupportDayType, Dictionary<string, int>>()
-            {
-                [SupportEvent.SupportDayType.WorkDay] = new Dictionary<string, int>(),
-                [SupportEvent.SupportDayType.Holiday] = new Dictionary<string, int>(),
-                [SupportEvent.SupportDayType.Weekend] = new Dictionary<string, int>(),
-            };
-            WorkdaySummary = 0;
-            WeekendSummary = 0;
-            HolidaySummary = 0;
-    }
+            base.Init();
+            SupportPersonReports.Clear();
+        }
 
         public string Get(List<SupportEvent> days, int numberOfSupportMonth)
         {
@@ -45,25 +35,28 @@ namespace ClientSupport
                 foreach (var supportEvent in days)
                 {
                     var person = supportEvent.Person;
-                    if (!DaysByPerson.ContainsKey(person))
+                    var supportPersonReport = SupportPersonReports.FirstOrDefault(p => p.Name.Equals(person));
+                    if (supportPersonReport == null)
                     {
-                        DaysByPerson[person] = new List<SupportEvent>();
+                        supportPersonReport = new SupportPersonReport() { Name = person, SupportHelper = SupportHelper };
+                        SupportPersonReports.Add(supportPersonReport);
                     }
-
-                    DaysByPerson[supportEvent.Person].Add(supportEvent);
-                    CountDays(supportEvent);
+                    supportPersonReport.AddEvents(supportEvent);
                 }
 
+                var textWeekendHours = IsOldWeekendDefinition() ? "13h + 48h" : $"{2* NotWorkingDaySupportHours}h";
+                var personText = GetPersons();
+                var textHolidays = Holidays > 0 ? $", {Holidays}x({NotWorkingDaySupportHours}h)={HolidayHours}" : String.Empty;
                 report =
                     $"{CzechMonths[dayOne.Date.Month - 1]} {dayOne.Date.Year}{Environment.NewLine}{Environment.NewLine}" +
-                    $"VÍKEND - 13H + 48, SVÁTEK - 13H + 24,  PRACOVNÍ DEN - 13H{Environment.NewLine}{Environment.NewLine}" +
-                    $"PAUŠÁLNI NÁHRADA ZA POHOTOVOST = 15% PRŮMĚRNÉ HODINOVÉ MZDY.{Environment.NewLine}{Environment.NewLine}" +
-                    $"========================================================================= {Environment.NewLine}{Environment.NewLine}" +
-                    $"{numberOfSupportMonth}. MĚSÍC POHOTOVOSTI KLIENTSKÉHO TÝMU.{Environment.NewLine}{Environment.NewLine}" +
-                    $"{GetPersons()}{Environment.NewLine}" +
-                    $"---------------------------------------------{Environment.NewLine}" +
-                    $"CELKEM             {GetHours(WorkdaySummary, WeekendSummary, HolidaySummary)}h // {WeekendSummary}X VÍKEND,  {WorkdaySummary}X PRACOVNÍ DEN, {HolidaySummary}X SVÁTEK{Environment.NewLine}" +
-                    $"                                    // {WeekendSummary}X(13H + 48)={GetWeekendHours(WeekendSummary)}, {WorkdaySummary}X13={GetWorkdayHours(WeekendSummary)}, {HolidaySummary}X(13H+ 24)={GetHolidayHours(HolidaySummary)}";
+                    $"{Vikend} - {textWeekendHours}, {Svatek} - {NotWorkingDaySupportHours}h, {PracovniDen} - {WorkingDaySupportHours}h{Environment.NewLine}{Environment.NewLine}" +
+                    $"Paušálni náhrada za pohotovost = 15% průměrné hodinové mzdy.{Environment.NewLine}{Environment.NewLine}" +
+                    $"{new string('=',70)}{Environment.NewLine}{Environment.NewLine}" +
+                    $"{numberOfSupportMonth}. měsíc pohotovosti klientského týmu.{Environment.NewLine}{Environment.NewLine}" +
+                    $"{personText}{Environment.NewLine}" +
+                    $"{new string('-', 70)}{ Environment.NewLine}" +
+                    $"Celkem{new string(' ', 15)}{HoursSummary}h{NumberDataSplitter}{GetTypeSummary()}{Environment.NewLine}" +
+                    $"{new string(' ', 25)}{NumberDataSplitter}{Weekends}x({textWeekendHours})={WeekendHours}, {Workdays}x13h={WorkdayHours}{textHolidays}";
             }
 
             return report;
@@ -72,75 +65,37 @@ namespace ClientSupport
         private string GetPersons()
         {
             var report = String.Empty;
-
-            foreach (var record in DaysByPerson)
+            var reportList = new List<string>();
+            foreach (var supportPersonReport in SupportPersonReports)
             {
-                var workdays = 0;
-                var weekends = 0;
-                var holidays = 0;
-                (workdays, weekends, holidays) = GetDays(record.Key);
-                WorkdaySummary = WorkdaySummary + workdays;
-                WeekendSummary = WeekendSummary + weekends;
-                HolidaySummary = HolidaySummary + holidays;
-                report += $"{record.Key}  {GetHours(workdays, weekends, holidays)} // {weekends}X VÍKEND, {workdays}X PRACOVNÍ DEN, {holidays}X SVÁTEK>{Environment.NewLine}";
+                DaysByType[SupportEvent.SupportDayType.WorkDay] = DaysByType[SupportEvent.SupportDayType.WorkDay] + supportPersonReport.Workdays;
+                DaysByType[SupportEvent.SupportDayType.Weekend] = DaysByType[SupportEvent.SupportDayType.Weekend] + supportPersonReport.Weekends;
+                DaysByType[SupportEvent.SupportDayType.Holiday] = DaysByType[SupportEvent.SupportDayType.Holiday] + supportPersonReport.Holidays;
+                var reportLine = supportPersonReport.Get();
+                reportList.Add(reportLine);
             }
-
+            //reportList = EyeCandyReportLines(reportList);
+            reportList.ForEach(i => report += i);
             return report;
         }
 
-        private int GetHours(int workdays, int weekends, int holidays)
+        private List<string> EyeCandyReportLines(List<string> reportList)
         {
-            // VÍKEND - 13H + 48, SVÁTEK - 13H + 24,  PRACOVNÍ DEN - 13H
-            return GetWeekendHours(weekends) + GetHolidayHours(holidays) + GetWorkdayHours(workdays);
-        }
-
-        private int GetWorkdayHours(int days)
-        {
-            // PRACOVNÍ DEN - 13H
-            return days * 13;
-        }
-
-        private int GetWeekendHours(int days)
-        {
-            // VÍKEND - 13H + 48
-            return days * (13 + 48);
-        }
-
-        private int GetHolidayHours(int days)
-        {
-            // SVÁTEK - 13H + 24
-            return days * (13 + 24);
-        }
-
-        private (int workdays, int weekends, int holidays) GetDays(string person)
-        {
-            return (
-                GetDayCount(person, SupportEvent.SupportDayType.WorkDay), 
-                GetDayCount(person, SupportEvent.SupportDayType.Weekend), 
-                GetDayCount(person, SupportEvent.SupportDayType.Holiday));
-        }
-
-        private int GetDayCount(string person, SupportEvent.SupportDayType supportDayType)
-        {
-            var days = DaysBySupportDayType[supportDayType];
-            return days.ContainsKey(person) ? days[person] : 0;
-        }
-
-        private void CountDays(SupportEvent supportEvent)
-        {
-            var supportType = supportEvent.SupportType;
-            if (supportEvent.SupportType == supportType)
+            var maxLength = reportList.Select(i => i.Substring(0, i.LastIndexOf(NumberDataSplitter)).Length).Max();
+            var newReportLines = new List<string>();
+            foreach(var line in reportList)
             {
-                var daysBy = DaysBySupportDayType[supportType];
-                if (!daysBy.ContainsKey(supportEvent.Person))
-                {
-                    daysBy[supportEvent.Person] = 1;
-                }
-                else
-                {
-                    daysBy[supportEvent.Person]++;
-                }
+                var length = line.Substring(0, line.LastIndexOf(NumberDataSplitter)).Length;
+                var spaceCorrection = new string(' ', maxLength - length);
+                newReportLines.Add(line.Replace(NumberDataSplitter, $"{spaceCorrection}{NumberDataSplitter}"));
             }
+
+            return newReportLines;
+        }
+
+        public override bool IsOldWeekendDefinition()
+        {
+            return SupportPersonReports.Where(r => r.IsOldWeekendDefinition() == true).ToList().Count > 0;
         }
     }
 }
