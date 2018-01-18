@@ -42,7 +42,9 @@ namespace ClientSupport
 
         public IEnumerable<ICSEvent> Prepare(IEnumerable<SupportEvent> events)
         {
-            return events.Select(e => e.Event);
+            var result = events.Select(e => e.Event);
+            result.ToList().ForEach(e => e.Summary = $"{e.Summary} Support");
+            return result;
         }
 
         private void Parse(ICSCalendar calendar)
