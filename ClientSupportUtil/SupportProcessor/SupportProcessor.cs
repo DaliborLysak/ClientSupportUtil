@@ -11,6 +11,8 @@ namespace ClientSupport
         public Dictionary<string, List<SupportEvent>> Calendar { get; private set; } = new Dictionary<string, List<SupportEvent>>();
         public Dictionary<string, int> ReportMonths { get; private set; } = new Dictionary<string, int>();
 
+        private Dictionary<string, string> CalendarDefinitions = new Dictionary<string, string>();
+
         public void LoadCalendar(string path)
         {
             var wrapper = new ICSCalendar();
@@ -28,7 +30,22 @@ namespace ClientSupport
             return new SupportReport(correctionNamesPath).Get(Calendar[month], ReportMonths[month]);
         }
 
-        public void Parse(ICSCalendar calendar)
+        public void ExportCalendar(string path, string month)
+        {
+            var events = Calendar[month];
+            foreach (var person in events.Select(e => e.Person).Distinct())
+            {
+                var personEvents = events.Where(e => e.Person.Equals(person)).ToList();
+                new ICSCalendar() { Events = Prepare(personEvents).ToList(), Definition = CalendarDefinitions }.Set($"{path}\\{person}.ics");
+            }
+        }
+
+        public IEnumerable<ICSEvent> Prepare(IEnumerable<SupportEvent> events)
+        {
+            return events.Select(e => e.Event);
+        }
+
+        private void Parse(ICSCalendar calendar)
         {
             Calendar.Clear();
             //2017.09.01 je prvni den pocitani supportu
@@ -46,6 +63,8 @@ namespace ClientSupport
                 }
                 Calendar[key].Add(supportEvent);
             }
+
+            CalendarDefinitions = calendar.Definition;
         }
 
         private Holidays Holidays = new Holidays();

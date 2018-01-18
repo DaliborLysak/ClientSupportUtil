@@ -30,11 +30,11 @@
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ClientSupportForm));
             this.splitContainerMain = new System.Windows.Forms.SplitContainer();
+            this.listBoxMonths = new System.Windows.Forms.ListBox();
+            this.richTextBoxReport = new System.Windows.Forms.RichTextBox();
             this.toolStripMain = new System.Windows.Forms.ToolStrip();
             this.toolStripButtonLoadCalendar = new System.Windows.Forms.ToolStripButton();
             this.toolStripButtonExportCalendars = new System.Windows.Forms.ToolStripButton();
-            this.listBoxMonths = new System.Windows.Forms.ListBox();
-            this.richTextBoxReport = new System.Windows.Forms.RichTextBox();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainerMain)).BeginInit();
             this.splitContainerMain.Panel1.SuspendLayout();
             this.splitContainerMain.Panel2.SuspendLayout();
@@ -60,6 +60,25 @@
             this.splitContainerMain.Size = new System.Drawing.Size(927, 495);
             this.splitContainerMain.SplitterDistance = 155;
             this.splitContainerMain.TabIndex = 1;
+            // 
+            // listBoxMonths
+            // 
+            this.listBoxMonths.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.listBoxMonths.FormattingEnabled = true;
+            this.listBoxMonths.Location = new System.Drawing.Point(0, 0);
+            this.listBoxMonths.Name = "listBoxMonths";
+            this.listBoxMonths.Size = new System.Drawing.Size(155, 495);
+            this.listBoxMonths.TabIndex = 0;
+            this.listBoxMonths.Click += new System.EventHandler(this.listBoxMonths_Click);
+            // 
+            // richTextBoxReport
+            // 
+            this.richTextBoxReport.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.richTextBoxReport.Location = new System.Drawing.Point(0, 0);
+            this.richTextBoxReport.Name = "richTextBoxReport";
+            this.richTextBoxReport.Size = new System.Drawing.Size(768, 495);
+            this.richTextBoxReport.TabIndex = 0;
+            this.richTextBoxReport.Text = "";
             // 
             // toolStripMain
             // 
@@ -90,26 +109,7 @@
             this.toolStripButtonExportCalendars.Name = "toolStripButtonExportCalendars";
             this.toolStripButtonExportCalendars.Size = new System.Drawing.Size(99, 22);
             this.toolStripButtonExportCalendars.Text = "Export Calendars";
-            this.toolStripButtonExportCalendars.Visible = false;
-            // 
-            // listBoxMonths
-            // 
-            this.listBoxMonths.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.listBoxMonths.FormattingEnabled = true;
-            this.listBoxMonths.Location = new System.Drawing.Point(0, 0);
-            this.listBoxMonths.Name = "listBoxMonths";
-            this.listBoxMonths.Size = new System.Drawing.Size(155, 495);
-            this.listBoxMonths.TabIndex = 0;
-            this.listBoxMonths.Click += new System.EventHandler(this.listBoxMonths_Click);
-            // 
-            // richTextBoxReport
-            // 
-            this.richTextBoxReport.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.richTextBoxReport.Location = new System.Drawing.Point(0, 0);
-            this.richTextBoxReport.Name = "richTextBoxReport";
-            this.richTextBoxReport.Size = new System.Drawing.Size(768, 495);
-            this.richTextBoxReport.TabIndex = 0;
-            this.richTextBoxReport.Text = "";
+            this.toolStripButtonExportCalendars.Click += new System.EventHandler(this.toolStripButtonExportCalendars_Click);
             // 
             // ClientSupportForm
             // 

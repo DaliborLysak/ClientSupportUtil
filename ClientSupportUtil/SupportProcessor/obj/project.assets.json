@@ -241,11 +241,11 @@
       "frameworks": {
         "netstandard2.0": {
           "projectReferences": {
-            "C:\\Dalibor\\desarrollo\\GitHubProjects\\ICSWrapper\\ICSWrapper\\ICSWrapper.csproj": {
-              "projectPath": "C:\\Dalibor\\desarrollo\\GitHubProjects\\ICSWrapper\\ICSWrapper\\ICSWrapper.csproj"
-            },
             "C:\\Dalibor\\desarrollo\\GitHubProjects\\HolidaysCZ\\HolidaysCZ\\HolidaysCZ\\HolidaysCZ.csproj": {
               "projectPath": "C:\\Dalibor\\desarrollo\\GitHubProjects\\HolidaysCZ\\HolidaysCZ\\HolidaysCZ\\HolidaysCZ.csproj"
+            },
+            "C:\\Dalibor\\desarrollo\\GitHubProjects\\ICSWrapper\\ICSWrapper\\ICSWrapper.csproj": {
+              "projectPath": "C:\\Dalibor\\desarrollo\\GitHubProjects\\ICSWrapper\\ICSWrapper\\ICSWrapper.csproj"
             }
           }
         }
@@ -262,7 +262,7 @@
           "NETStandard.Library": {
             "suppressParent": "All",
             "target": "Package",
-            "version": "2.0.0",
+            "version": "[2.0.0, )",
             "autoReferenced": true
           }
         },

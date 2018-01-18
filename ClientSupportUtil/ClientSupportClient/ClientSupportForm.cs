@@ -1,10 +1,8 @@
-﻿using ClientSupport;
-using ICSWrapper;
-using System;
-using System.Windows.Forms;
+﻿using System;
 using System.Collections.Generic;
-using System.Runtime.Serialization.Json;
-using System.IO;
+using System.ComponentModel;
+
+using System.Windows.Forms;
 
 namespace ClientSupportClient
 {
@@ -13,47 +11,41 @@ namespace ClientSupportClient
         public ClientSupportForm()
         {
             InitializeComponent();
+            Processor = new UXActionProcessor()
+            {
+                Data = new UXData() { MonthsControl = listBoxMonths, ReportControl = richTextBoxReport },
+                Actions = new Dictionary<object, MethodWithUX>()
+                {
+                    [toolStripButtonLoadCalendar] = new LoadCalendar(),
+                    [listBoxMonths] = new SelectMonth(),
+                    [toolStripButtonExportCalendars] = new ExportCalendars()
+                }
+            };
+
+            EnableUX();
         }
 
-        private SupportProcessor Processor = new SupportProcessor();
+        private UXActionProcessor Processor;
 
         private void toolStripButtonLoadCalendar_Click(object sender, EventArgs e)
         {
-            var calendar = new ICSCalendar();
-            using (var dialog = new OpenFileDialog())
-            {
-                if (dialog.ShowDialog() == DialogResult.OK)
-                {
-                    if (!String.IsNullOrEmpty(dialog.FileName))
-                    {
-                        toolStripMain.Enabled = false;
-                        Cursor.Current = Cursors.WaitCursor;
-                        try
-                        {
-                            Processor.LoadCalendar(dialog.FileName);
-                        }
-                        finally
-                        {
-                            toolStripMain.Enabled = true;
-                            Cursor.Current = Cursors.Default;
-                        }
-                    }
-                }
-                var months = Processor.GetMonths();
-                listBoxMonths.Items.Clear();
-                listBoxMonths.BeginUpdate();
-                foreach (var month in months)
-                {
-                    listBoxMonths.Items.Add(month);
-                }
-                listBoxMonths.EndUpdate();
-            }
+            Processor.Process(sender);
+            EnableUX();
         }
 
         private void listBoxMonths_Click(object sender, EventArgs e)
         {
-            string month = listBoxMonths.SelectedItem.ToString();
-            richTextBoxReport.Text = Processor.GetMonthReport(month, Properties.Settings.Default.PersonNames);
+            Processor.Process(sender);
+        }
+
+        private void toolStripButtonExportCalendars_Click(object sender, EventArgs e)
+        {
+            Processor.Process(sender);
+        }
+
+        private void EnableUX()
+        {
+            toolStripButtonExportCalendars.Enabled = listBoxMonths.Items.Count > 0;
         }
     }
 }

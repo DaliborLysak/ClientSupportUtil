@@ -2,6 +2,7 @@
 using System.IO;
 using System.Linq;
 using System.Runtime.Serialization.Json;
+using System.Text;
 
 namespace ClientSupport
 {
@@ -15,7 +16,13 @@ namespace ClientSupport
                 DataContractJsonSerializer serializer = new DataContractJsonSerializer(typeof(List<PersonNames>));
                 using (var stream = new FileStream(correctionNamesPath, FileMode.Open, FileAccess.Read))
                 {
-                    CorrectionNames = (List<PersonNames>)serializer.ReadObject(stream);
+                    // musi byt v utf* jinak se json serializer osype
+                    var reader = new StreamReader(stream);
+                    var data = reader.ReadToEnd();
+                    using (var memoryStream = new MemoryStream(Encoding.UTF8.GetBytes(data)))
+                    {
+                        CorrectionNames = (List<PersonNames>)serializer.ReadObject(memoryStream);
+                    }
                 }
             }
 

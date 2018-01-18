@@ -7,6 +7,7 @@ namespace ClientSupport
     {
         public SupportEvent(ICSEvent icsEvent, bool holiday)
         {
+            Event = icsEvent;
             Date = icsEvent.StartDate;
             SupportType =
                 IsWeekend(icsEvent.StartDate, icsEvent.EndDate) ? SupportDayType.Weekend : holiday ? SupportDayType.Holiday : SupportDayType.WorkDay;
@@ -24,6 +25,8 @@ namespace ClientSupport
 
             return isWeekend;
         }
+
+        public ICSEvent Event { get; set; }
 
         public bool OldWeekendDefinition { get; private set; } = false;
 

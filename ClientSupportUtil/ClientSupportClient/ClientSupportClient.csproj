@@ -51,8 +51,14 @@
     <Compile Include="ClientSupportForm.Designer.cs">
       <DependentUpon>ClientSupportForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="ExportCalendars.cs" />
+    <Compile Include="LoadCalendar.cs" />
+    <Compile Include="MethodWithUX.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SelectMonth.cs" />
+    <Compile Include="UXActionProcessor.cs" />
+    <Compile Include="UXData.cs" />
     <EmbeddedResource Include="ClientSupportForm.resx">
       <DependentUpon>ClientSupportForm.cs</DependentUpon>
     </EmbeddedResource>
