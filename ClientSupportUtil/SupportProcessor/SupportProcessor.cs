@@ -9,7 +9,6 @@ namespace ClientSupport
     public class SupportProcessor
     {
         public Dictionary<string, List<SupportEvent>> Calendar { get; private set; } = new Dictionary<string, List<SupportEvent>>();
-        public Dictionary<string, int> ReportMonths { get; private set; } = new Dictionary<string, int>();
 
         private Dictionary<string, string> CalendarDefinitions = new Dictionary<string, string>();
 
@@ -27,7 +26,7 @@ namespace ClientSupport
 
         public string GetMonthReport(string month, string correctionNamesPath)
         {
-            return new SupportReport(correctionNamesPath).Get(Calendar[month], ReportMonths[month]);
+            return new SupportReport(correctionNamesPath).Get(Calendar[month]);
         }
 
         public void ExportCalendar(string path, string month)
@@ -51,8 +50,7 @@ namespace ClientSupport
         {
             Calendar.Clear();
             //2017.09.01 je prvni den pocitani supportu
-            var validCalendar = calendar.Events.Where(e => e.StartDate > new DateTime(2017, 8, 31)).OrderBy(e => e.StartDate.Month);
-            var reportMonth = 2; // predtim se pocitaly jinak reporty
+            var validCalendar = calendar.Events.Where(e => e.StartDate > new DateTime(2017, 8, 31)).OrderBy(e => e.StartDate.Year).ThenBy(e => e.StartDate.Month);
             foreach (ICSEvent icsEvent in validCalendar)
             {
                 var supportEvent = new SupportEvent(icsEvent, Holidays.IsHoliday(icsEvent.StartDate));
@@ -60,8 +58,6 @@ namespace ClientSupport
                 if (!Calendar.ContainsKey(key))
                 {
                     Calendar[key] = new List<SupportEvent>();
-                    reportMonth++;
-                    ReportMonths[key] = reportMonth;
                 }
                 Calendar[key].Add(supportEvent);
             }

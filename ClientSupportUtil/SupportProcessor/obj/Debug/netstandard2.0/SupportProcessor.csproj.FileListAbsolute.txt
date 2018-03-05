@@ -1,4 +1,0 @@
-C:\Dalibor\desarrollo\GitHubProjects\ICSWrapper\SupportProcessor\obj\Debug\netstandard2.0\SupportProcessor.csprojResolveAssemblyReference.cache
-C:\Dalibor\desarrollo\GitHubProjects\ICSWrapper\SupportProcessor\obj\Debug\netstandard2.0\SupportProcessor.csproj.CoreCompileInputs.cache
-C:\Dalibor\desarrollo\GitHubProjects\ICSWrapper\SupportProcessor\obj\Debug\netstandard2.0\SupportProcessor.AssemblyInfoInputs.cache
-C:\Dalibor\desarrollo\GitHubProjects\ICSWrapper\SupportProcessor\obj\Debug\netstandard2.0\SupportProcessor.AssemblyInfo.cs

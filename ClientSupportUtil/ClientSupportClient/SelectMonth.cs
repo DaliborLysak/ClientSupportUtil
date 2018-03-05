@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Drawing;
 
 namespace ClientSupportClient
 {
@@ -14,6 +15,7 @@ namespace ClientSupportClient
                 var reportControl = Data?.ReportControl;
                 if (reportControl != null)
                 {
+                    reportControl.Font = new Font("Courier", 11);
                     reportControl.Text = Processor.GetMonthReport(month, Properties.Settings.Default.PersonNames);
                 }
             }

@@ -22,7 +22,7 @@ namespace ClientSupport
             SupportPersonReports.Clear();
         }
 
-        public string Get(List<SupportEvent> days, int numberOfSupportMonth)
+        public string Get(List<SupportEvent> days)
         {
             var report = "Missing data.";
             Init();
@@ -50,9 +50,8 @@ namespace ClientSupport
                 report =
                     $"{CzechMonths[dayOne.Date.Month - 1]} {dayOne.Date.Year}{Environment.NewLine}{Environment.NewLine}" +
                     $"{Vikend} - {textWeekendHours}, {Svatek} - {NotWorkingDaySupportHours}h, {PracovniDen} - {WorkingDaySupportHours}h{Environment.NewLine}{Environment.NewLine}" +
-                    $"Paušálni náhrada za pohotovost = 15% průměrné hodinové mzdy.{Environment.NewLine}{Environment.NewLine}" +
+                    $"Paušálni náhrada za pohotovost = 15% průměrné hodinové mzdy.{Environment.NewLine}" +
                     $"{new string('=',70)}{Environment.NewLine}{Environment.NewLine}" +
-                    $"{numberOfSupportMonth}. měsíc pohotovosti klientského týmu.{Environment.NewLine}{Environment.NewLine}" +
                     $"{personText}{Environment.NewLine}" +
                     $"{new string('-', 70)}{ Environment.NewLine}" +
                     $"Celkem{new string(' ', 15)}{HoursSummary}h{NumberDataSplitter}{GetTypeSummary()}{Environment.NewLine}" +
