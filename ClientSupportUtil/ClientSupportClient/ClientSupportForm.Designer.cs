@@ -118,6 +118,7 @@
             this.ClientSize = new System.Drawing.Size(927, 523);
             this.Controls.Add(this.toolStripMain);
             this.Controls.Add(this.splitContainerMain);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "ClientSupportForm";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Client Support";
