@@ -9,7 +9,7 @@ namespace ClientSupportClient
         {
             base.Process();
 
-            var month = Data?.MonthsControl?.SelectedItem.ToString();
+            var month = Data?.MonthsControl?.SelectedItem?.ToString();
             if (!String.IsNullOrEmpty(month))
             {
                 var reportControl = Data?.ReportControl;
