@@ -37,7 +37,7 @@ namespace ClientSupport
         {
             var fullName = SupportHelper?.TranslateNames(Name);
             string hoursSummary = HoursSummary > 99 ? HoursSummary.ToString() : $" {HoursSummary}";
-            return $"{fullName} {new string(' ', SupportHelper.LineLengthCorrection - fullName.Length)}{hoursSummary}{NumberDataSplitter}{GetTypeSummary()}{Environment.NewLine}";
+            return $"{fullName} {new string(' ', SupportHelper.LineLengthCorrection - fullName.Length)}{hoursSummary}{NumberDataSplitter}{GetTypeSummary(false)}{Environment.NewLine}";
         }
 
         public override bool IsOldWeekendDefinition()

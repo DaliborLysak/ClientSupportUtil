@@ -39,12 +39,19 @@ namespace ClientSupport
             return count > 0 ? $"{count}x {item}" : String.Empty;
         }
 
-        protected string GetTypeSummary()
+        protected string GetTypeSummary(bool summaryEyecandy)
         {
-            var records = new List<string> { GetTypeReport(Weekends, Vikend), GetTypeReport(Workdays, PracovniDen), GetTypeReport(Holidays, Svatek) };
-            var summary = records.Where(r => !String.IsNullOrEmpty(r)).ToList().Aggregate((f, s) => $"{f}, {s}");
+            var records = new List<string> { GetTypeReport(Workdays, PracovniDen), GetTypeReport(Weekends, Vikend), GetTypeReport(Holidays, Svatek) };
+            var filterdRecords = records.Where(r => !String.IsNullOrEmpty(r)).ToList();
+            filterdRecords = filterdRecords.Select(r => DoEyecandy(summaryEyecandy, r)).ToList();
+            var summary = filterdRecords.Aggregate((f, s) => $"{f}, {(summaryEyecandy ? " " : String.Empty)}{s}");
 
             return summary;
+        }
+
+        private string DoEyecandy(bool summaryEyecandy, string report)
+        {
+            return $"{(summaryEyecandy ? String.Empty : " ")}{report}";
         }
 
         public virtual bool IsOldWeekendDefinition()

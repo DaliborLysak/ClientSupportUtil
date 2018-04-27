@@ -46,7 +46,7 @@ namespace ClientSupport
 
                 var textWeekendHours = IsOldWeekendDefinition() ? "13h + 48h" : $"{2* NotWorkingDaySupportHours}h";
                 var personText = GetPersons();
-                var textHolidays = Holidays > 0 ? $", {Holidays}x({NotWorkingDaySupportHours}h)={HolidayHours}" : String.Empty;
+                var textHolidays = Holidays > 0 ? $",{Holidays}x({NotWorkingDaySupportHours}h)={HolidayHours}" : String.Empty;
                 report =
                     $"{CzechMonths[dayOne.Date.Month - 1]} {dayOne.Date.Year}{Environment.NewLine}{Environment.NewLine}" +
                     $"{Vikend} - {textWeekendHours}, {Svatek} - {NotWorkingDaySupportHours}h, {PracovniDen} - {WorkingDaySupportHours}h{Environment.NewLine}{Environment.NewLine}" +
@@ -54,8 +54,8 @@ namespace ClientSupport
                     $"{new string('=',70)}{Environment.NewLine}{Environment.NewLine}" +
                     $"{personText}{Environment.NewLine}" +
                     $"{new string('-', 70)}{ Environment.NewLine}" +
-                    $"Celkem{new string(' ', 15)}{HoursSummary}h{NumberDataSplitter}{GetTypeSummary()}{Environment.NewLine}" +
-                    $"{new string(' ', 25)}{NumberDataSplitter}{Weekends}x({textWeekendHours})={WeekendHours}, {Workdays}x13h={WorkdayHours}{textHolidays}";
+                    $"Celkem{new string(' ', 10)}{HoursSummary}{NumberDataSplitter}{GetTypeSummary(true)}{Environment.NewLine}" +
+                    $"{new string(' ', 19)}{NumberDataSplitter}{Workdays}x13h={WorkdayHours},        {Weekends}x({textWeekendHours})={WeekendHours}{textHolidays}";
             }
 
             return report;
